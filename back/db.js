@@ -11,7 +11,7 @@ const modelProduct = require("./src/models/Product.model");
 const sequelize = new Sequelize(
   `postgres://${DB_USER}:${DB_PASS}@${DB_SERVER}:${DB_PORT}/${DB_NAME}`,
   {
-    logging: false, // set to console.log to see the raw SQL queries
+    logging: false,
     native: false, // lets Sequelize know we can use pg-native for ~30% more speed
   }
 );
