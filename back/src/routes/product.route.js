@@ -35,7 +35,7 @@ route.get("/:id", async (req, res) => {
 route.post("/", async (req, res) => {
   const { name, price } = req.body;
   await Product.create({ name, price });
-  res.json({ message: `product ${name} at ${price} created!` });
+  res.json({ message: `product ${name} to ${price} created!` });
 });
 
 // update product -_-_-_-_-_-_-_-_-_-_-_-_-_-_-_-_-_-_-_-_-_
@@ -44,13 +44,32 @@ route.put("/:id", async (req, res) => {
   const { id } = req.params;
 
   try {
-    const searchProduct = await Client.findByPk(id);
+    const searchProduct = await Product.findByPk(id);
     if (searchProduct) {
-      await Client.update({ name, price }, { where: { id } });
+      await Product.update({ name, price }, { where: { id } });
       return res.status(200).json({
-        message: `product ${searchClient.name}: ${searchClient.price} 
-        updated to ${name}: ${price}!`,
+        message: `product ${searchProduct.name}: ${searchProduct.price} 
+        upgraded to ${name}: ${price}!`,
       });
+    } else {
+      return res.status(404).json({ message: "product not found!" });
+    }
+  } catch (err) {
+    console.log(err);
+  }
+});
+
+// delete product -_-_-_-_-_-_-_-_-_-_-_-_-_-_-_-_-_-_-_-_-_
+route.delete("/:id", async (req, res) => {
+  const { id } = req.params;
+
+  try {
+    const product = await Product.findByPk(id);
+    if (product) {
+      await Product.destroy({ where: { id } });
+      return res
+        .status(200)
+        .json({ message: `product ${product.name} deleted!` });
     } else {
       return res.status(404).json({ message: "product not found!" });
     }
