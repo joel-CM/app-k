@@ -1,11 +1,23 @@
 const express = require("express");
 const route = express.Router();
 // model client
-const { Client } = require("../../db");
+const { Client, Product } = require("../../db");
 
 // get all client -_-_-_-_-_-_-_-_-_-_-_-_-_-_-_-_-_-_-_-_-_
 route.get("/", async (req, res) => {
-  const clients = await Client.findAll();
+  const client_db = await Client.findAll({
+    include: {
+      model: Product,
+    },
+  });
+
+  const clients = client_db.map((c) => {
+    return {
+      id: c.id,
+      name: c.name,
+      products: c.Products?.map((p) => p.name),
+    };
+  });
   res.json(clients);
 });
 
@@ -30,7 +42,7 @@ route.get("/:id", async (req, res) => {
 
 // create a new client -_-_-_-_-_-_-_-_-_-_-_-_-_-_-_-_-_-_-_-_-_
 route.post("/", async (req, res) => {
-  const { name } = req.body;
+  const { name, client, products } = req.body;
   await Client.create({ name });
   res.json({ message: `client ${name} created!` });
 });

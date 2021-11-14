@@ -2,7 +2,7 @@ const { conn } = require("./db");
 const app = require("./src/app");
 
 conn
-  .sync({ force: true })
+  .sync()
   .then((res) => {
     app.listen(3001, () => {
       console.log("db is running!");
