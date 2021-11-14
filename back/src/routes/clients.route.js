@@ -32,25 +32,21 @@ route.get("/:id", async (req, res) => {
 route.post("/", async (req, res) => {
   const { name } = req.body;
   await Client.create({ name });
-  res.json({ message: "client created!" });
+  res.json({ message: `client ${name} created!` });
 });
 
 // update client -_-_-_-_-_-_-_-_-_-_-_-_-_-_-_-_-_-_-_-_-_
-route.put("/", async (req, res) => {
-  const { newName, oldName } = req.body;
+route.put("/:id", async (req, res) => {
+  const { name } = req.body;
+  const { id } = req.params;
 
   try {
-    const searchClient = await Client.findOne({ where: { name: oldName } });
+    const searchClient = await Client.findOne({ where: { id } });
     if (searchClient) {
-      await Client.update(
-        { name: newName },
-        {
-          where: {
-            name: oldName,
-          },
-        }
-      );
-      return res.status(200).json({ message: "client updated!" });
+      await Client.update({ name }, { where: { id } });
+      return res
+        .status(200)
+        .json({ message: `client ${searchClient.name} updated to ${name}!` });
     } else {
       return res.status(404).json({ message: "client not found!" });
     }
@@ -59,4 +55,26 @@ route.put("/", async (req, res) => {
   }
 });
 
+route.get("/", async (req, res) => {
+  console.log(object);
+});
+
+// delete client -_-_-_-_-_-_-_-_-_-_-_-_-_-_-_-_-_-_-_-_-_
+route.delete("/:id", async (req, res) => {
+  const { id } = req.params;
+
+  try {
+    const client = await Client.findByPk(id);
+    if (client) {
+      await Client.destroy({ where: { id } });
+      return res
+        .status(200)
+        .json({ message: `client ${client.name} deleted!` });
+    } else {
+      return res.status(404).json({ message: "client not found!" });
+    }
+  } catch (err) {
+    console.log(err);
+  }
+});
 module.exports = route;

@@ -8,7 +8,7 @@ const routeClients = require("./routes/clients.route");
 app.use(express.json());
 app.use(morgan("dev"));
 
-// routs
-app.use("/clients", routeClients);
+// routs -_-_-_-_-_-_-_-_-_-_-_-_-_-_-_-_
+app.use("/api/clients", routeClients);
 
 module.exports = app;
